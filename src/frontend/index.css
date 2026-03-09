@@ -63,49 +63,49 @@
 }
 
 /* ============================================
-   Design Tokens — OKLCH Color System
-   Light mode: clean white editorial portfolio
+   Design Tokens — Dark Glass Morphism Theme
+   Deep navy-black, coral accent, editorial 2026
    ============================================ */
 
 @layer base {
   :root {
     --radius: 0.75rem;
 
-    /* Base surfaces */
-    --background: 0.985 0 0;
-    --foreground: 0.12 0 0;
+    /* Base surfaces — dark mode only */
+    --background: 0.08 0.015 260;
+    --foreground: 0.97 0 0;
 
     /* Cards */
-    --card: 1 0 0;
-    --card-foreground: 0.12 0 0;
+    --card: 0.12 0.01 260;
+    --card-foreground: 0.97 0 0;
 
     /* Popovers */
-    --popover: 1 0 0;
-    --popover-foreground: 0.12 0 0;
+    --popover: 0.10 0.01 260;
+    --popover-foreground: 0.97 0 0;
 
-    /* Primary — near-black */
-    --primary: 0.12 0 0;
-    --primary-foreground: 0.985 0 0;
+    /* Primary — coral as primary */
+    --primary: 0.65 0.22 35;
+    --primary-foreground: 0.97 0 0;
 
-    /* Secondary — light warm gray */
-    --secondary: 0.95 0.005 60;
-    --secondary-foreground: 0.12 0 0;
+    /* Secondary */
+    --secondary: 0.18 0.01 260;
+    --secondary-foreground: 0.85 0 0;
 
-    /* Accent — bold coral/orange */
+    /* Accent — coral */
     --accent: 0.65 0.22 35;
-    --accent-foreground: 0.985 0 0;
+    --accent-foreground: 0.97 0 0;
 
     /* Muted */
-    --muted: 0.94 0.005 60;
-    --muted-foreground: 0.5 0 0;
+    --muted: 0.15 0.01 260;
+    --muted-foreground: 0.55 0 0;
 
     /* Destructive */
     --destructive: 0.577 0.245 27.325;
     --destructive-foreground: 0.985 0 0;
 
     /* Borders & Inputs */
-    --border: 0.9 0.005 60;
-    --input: 0.9 0.005 60;
+    --border: 0.25 0.01 260;
+    --input: 0.20 0.01 260;
     --ring: 0.65 0.22 35;
 
     /* Charts */
@@ -115,22 +115,22 @@
     --chart-4: 0.828 0.189 84.429;
     --chart-5: 0.769 0.188 70.08;
 
-    /* Sidebar */
-    --sidebar: 0.12 0 0;
-    --sidebar-foreground: 0.985 0 0;
+    /* Sidebar — dark theme */
+    --sidebar: 0.06 0.01 260;
+    --sidebar-foreground: 0.97 0 0;
     --sidebar-primary: 0.65 0.22 35;
-    --sidebar-primary-foreground: 0.985 0 0;
-    --sidebar-accent: 0.2 0 0;
-    --sidebar-accent-foreground: 0.985 0 0;
-    --sidebar-border: 0.2 0 0;
+    --sidebar-primary-foreground: 0.97 0 0;
+    --sidebar-accent: 0.18 0.01 260;
+    --sidebar-accent-foreground: 0.97 0 0;
+    --sidebar-border: 0.20 0.01 260;
     --sidebar-ring: 0.65 0.22 35;
 
     /* Portfolio-specific tokens */
-    --hero-bg: 0.97 0.005 60;
-    --dark-section: 0.12 0 0;
-    --dark-section-fg: 0.97 0.005 60;
+    --hero-bg: 0.08 0.015 260;
+    --dark-section: 0.06 0.01 260;
+    --dark-section-fg: 0.97 0 0;
     --coral: 0.65 0.22 35;
-    --coral-light: 0.92 0.06 35;
+    --coral-light: 0.30 0.08 35;
   }
 
   * {
@@ -140,10 +140,12 @@
   html {
     scroll-behavior: smooth;
     font-size: 16px;
+    color-scheme: dark;
   }
 
   body {
     @apply bg-background text-foreground;
+    background: oklch(var(--background));
     font-family: "Outfit", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -152,6 +154,85 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: "Bricolage Grotesque", sans-serif;
   }
+}
+
+/* ============================================
+   Glassmorphism Utilities
+   ============================================ */
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 8px 40px rgba(248, 71, 19, 0.08);
+}
+
+.glass-nav {
+  background: rgba(10, 10, 20, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================
+   Floating Orbs
+   ============================================ */
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+@keyframes orb-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -20px) scale(1.05); }
+  66% { transform: translate(-20px, 15px) scale(0.97); }
+}
+
+.orb-animate {
+  animation: orb-float 12s ease-in-out infinite;
+}
+
+.orb-animate-slow {
+  animation: orb-float 18s ease-in-out infinite reverse;
+}
+
+.orb-animate-medium {
+  animation: orb-float 14s ease-in-out infinite 3s;
+}
+
+/* ============================================
+   Gradient Text
+   ============================================ */
+
+.gradient-text {
+  background: linear-gradient(135deg, #F84713 0%, #FF8C42 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   Glow Button
+   ============================================ */
+
+.glow-btn {
+  box-shadow: 0 0 20px rgba(248, 71, 19, 0.3);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.glow-btn:hover {
+  box-shadow: 0 0 35px rgba(248, 71, 19, 0.5);
+  transform: translateY(-1px);
 }
 
 /* ============================================
@@ -185,7 +266,7 @@
 
 .project-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 24px 60px -8px oklch(0.12 0 0 / 0.12), 0 8px 20px -4px oklch(0.12 0 0 / 0.08);
+  box-shadow: 0 24px 60px -8px rgba(248, 71, 19, 0.12), 0 8px 20px -4px rgba(0, 0, 0, 0.3);
 }
 
 /* ============================================
@@ -264,7 +345,251 @@
 }
 
 /* ============================================
-   Responsive image sizing
+   Hire Me Pop Animation
+   ============================================ */
+
+@keyframes hire-me-pop {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.15); }
+  60%  { transform: scale(0.95); }
+  80%  { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.hire-me-pop:hover {
+  animation: hire-me-pop 0.5s ease-in-out forwards;
+}
+
+/* ============================================
+   CTA Ring Pulse Animation
+   ============================================ */
+
+@keyframes ring-pulse {
+  0%   { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* ============================================
+   About Me — Spinning Circle Border
+   ============================================ */
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* ============================================
+   Scrollbar Utility
+   ============================================ */
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+/* ============================================
+   Hero title hover sweep
+   ============================================ */
+
+.hero-title-sweep {
+  background-image: linear-gradient(90deg, currentColor 0%, currentColor 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  transition: color 0.35s ease;
+}
+
+.hero-title-sweep:hover {
+  color: #F84713;
+}
+
+/* ============================================
+   Footer icon brand colors
+   ============================================ */
+
+.footer-icon {
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.footer-icon:hover {
+  color: #F84713 !important;
+  border-color: #F84713 !important;
+}
+
+/* ============================================
+   Design Process — animated stepper
+   ============================================ */
+
+@keyframes step-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.process-step {
+  opacity: 0;
+  animation: step-in 0.5s ease forwards;
+  animation-play-state: paused;
+}
+
+.process-step.is-animated {
+  animation-play-state: running;
+}
+
+/* ============================================
+   Design Process — stroke draw animation
+   ============================================ */
+
+@keyframes stroke-draw {
+  from { stroke-dashoffset: 150.8; }
+  to   { stroke-dashoffset: 0; }
+}
+
+.process-stroke {
+  stroke-dasharray: 150.8;
+  stroke-dashoffset: 150.8;
+  animation: stroke-draw 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-play-state: paused;
+}
+
+.process-stroke.is-animated {
+  animation-play-state: running;
+}
+
+/* ============================================
+   Skills card stagger animation
+   ============================================ */
+
+@keyframes skill-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.skill-card {
+  opacity: 0;
+  animation: skill-in 0.4s ease forwards;
+  animation-play-state: paused;
+}
+
+.skill-card.is-animated {
+  animation-play-state: running;
+}
+
+/* ============================================
+   Send Message button glow
+   ============================================ */
+
+.send-btn:hover {
+  box-shadow: 0 0 20px rgba(248, 71, 19, 0.4);
+  transform: scale(1.02);
+}
+
+/* ============================================
+   Reel shimmer — simulates auto-running video
+   ============================================ */
+
+@keyframes reel-shimmer {
+  0%   { transform: translateX(-100%) skewX(-10deg); opacity: 0; }
+  40%  { opacity: 0.06; }
+  100% { transform: translateX(200%) skewX(-10deg); opacity: 0; }
+}
+
+.reel-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+  animation: reel-shimmer 2.4s ease-in-out infinite;
+}
+
+/* Live dot pulse */
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.75); }
+}
+
+.reel-live-dot {
+  animation: live-pulse 1.2s ease-in-out infinite;
+}
+
+/* ============================================
+   About Me — 3D orb floats inside glass card
+   ============================================ */
+
+@keyframes about-orb-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(6px, -6px) scale(1.08); }
+}
+
+.about-3d-orb {
+  position: absolute;
+  border-radius: 50%;
+  animation: about-orb-float 4s ease-in-out infinite;
+}
+
+.about-3d-orb-2 {
+  position: absolute;
+  border-radius: 50%;
+  animation: about-orb-float 5s ease-in-out infinite reverse;
+}
+
+/* ============================================
+   No hover effect — CTA Contact Me button
+   ============================================ */
+
+.no-hover-effect:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  background: inherit !important;
+  opacity: 1 !important;
+}
+
+/* ============================================
+   Hero Flip Card
+   ============================================ */
+
+.flip-card {
+  perspective: 1200px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.flip-card-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 1.25rem;
+  overflow: hidden;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+@keyframes floatBob {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
+.float-bob {
+  animation: floatBob 6s ease-in-out infinite;
+}
+
+.float-bob-paused {
+  animation-play-state: paused;
+}
+
+/* ============================================
+   Reduced motion
    ============================================ */
 
 @media (prefers-reduced-motion: reduce) {
@@ -280,5 +605,43 @@
 
   .project-card:hover {
     transform: none;
+  }
+
+  .hire-me-pop:hover {
+    animation: none;
+  }
+
+  .spin-slow {
+    animation: none;
+  }
+
+  .orb-animate,
+  .orb-animate-slow,
+  .orb-animate-medium {
+    animation: none;
+  }
+
+  .process-step,
+  .process-stroke,
+  .skill-card {
+    opacity: 1;
+    animation: none;
+  }
+
+  .process-stroke {
+    stroke-dashoffset: 0;
+  }
+
+  .glow-btn:hover {
+    transform: none;
+  }
+
+  .float-bob,
+  .float-bob-paused {
+    animation: none;
+  }
+
+  .flip-card-inner {
+    transition: none;
   }
 }
