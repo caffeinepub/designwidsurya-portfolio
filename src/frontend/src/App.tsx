@@ -1,3 +1,9 @@
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,8 +20,10 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   ArrowRight,
   CheckCircle2,
+  ChevronDown,
   ExternalLink,
   Instagram,
+  Layers,
   Linkedin,
   Loader2,
   Mail,
@@ -27,7 +35,7 @@ import {
   X,
   Youtube,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SiBehance } from "react-icons/si";
 import { toast } from "sonner";
 import { useActor } from "./hooks/useActor";
@@ -299,6 +307,7 @@ function Navbar() {
   const navLinks = [
     { label: "Work", target: "work" },
     { label: "Case Studies", target: "case-studies" },
+    { label: "Services", target: "services" },
     { label: "Skills", target: "skills" },
     { label: "About", target: "about" },
     { label: "Contact", target: "contact" },
@@ -357,7 +366,8 @@ function Navbar() {
         {/* Mobile Hamburger */}
         <button
           type="button"
-          className="md:hidden p-2 text-white"
+          className="md:hidden p-2 relative z-10"
+          style={{ color: "white" }}
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle menu"
         >
@@ -497,7 +507,7 @@ function HeroFlipCard() {
                 src="/assets/uploads/Artboard-1-2.jpg"
                 alt="Surya — Designer Poster"
                 className="w-full h-full object-contain"
-                style={{ background: "transparent" }}
+                style={{ background: "transparent", borderRadius: "3.5rem" }}
                 draggable={false}
               />
             </div>
@@ -514,7 +524,7 @@ function HeroFlipCard() {
                 src="/assets/uploads/Artboard-2-1.jpg"
                 alt="Surya — Business Card"
                 className="w-full h-full object-contain"
-                style={{ background: "transparent" }}
+                style={{ background: "transparent", borderRadius: "3.5rem" }}
                 draggable={false}
               />
             </div>
@@ -660,16 +670,71 @@ function ProjectCard({
   index: number;
   prominent?: boolean;
 }) {
+  const cardRef = useRef<HTMLElement>(null);
+  const [tiltStyle, setTiltStyle] = useState<React.CSSProperties>({
+    transform: "perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)",
+    transition: "transform 0.4s ease",
+    transformStyle: "preserve-3d",
+  });
+  const [glare, setGlare] = React.useState({ x: 50, y: 50, opacity: 0 });
+
+  function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    const rotateY = (dx / (rect.width / 2)) * 12;
+    const rotateX = -(dy / (rect.height / 2)) * 12;
+    const glareX = ((e.clientX - rect.left) / rect.width) * 100;
+    const glareY = ((e.clientY - rect.top) / rect.height) * 100;
+    setTiltStyle({
+      transform: `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.04)`,
+      transition: "none",
+      transformStyle: "preserve-3d",
+    });
+    setGlare({ x: glareX, y: glareY, opacity: 0.12 });
+  }
+
+  function handleMouseLeave() {
+    setTiltStyle({
+      transform: "perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)",
+      transition: "transform 0.4s ease",
+      transformStyle: "preserve-3d",
+    });
+    setGlare((g) => ({ ...g, opacity: 0 }));
+  }
+
   return (
     <article
+      ref={cardRef}
       key={project.id}
       data-ocid={`projects.item.${project.id}`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={tiltStyle}
       className={`project-card glass-card rounded-2xl overflow-hidden reveal reveal-delay-${Math.min(index + 1, 5)} flex-shrink-0 ${
         prominent
           ? "w-[260px] sm:w-[300px] md:w-[340px]"
           : "w-52 sm:w-60 md:w-64"
       }`}
     >
+      {/* Shine / Glare overlay */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          zIndex: 10,
+          borderRadius: "inherit",
+          background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255,255,255,${glare.opacity}) 0%, transparent 65%)`,
+          transition: glare.opacity === 0 ? "opacity 0.4s ease" : "none",
+        }}
+      />
+
       {/* Project Image */}
       <div
         className="relative overflow-hidden"
@@ -829,6 +894,333 @@ function FeaturedProjects() {
 /* ============================================
    Case Study Section
    ============================================ */
+
+function ServicesSection() {
+  const graphicDesignServices = [
+    {
+      title: "Social Media Design",
+      items: [
+        "Instagram Post Design",
+        "Carousel Design",
+        "Story Design",
+        "Ad Creatives",
+      ],
+    },
+    {
+      title: "Branding Design",
+      items: [
+        "Logo Design",
+        "Brand Identity",
+        "Brand Guidelines",
+        "Visual Style Creation",
+      ],
+    },
+    {
+      title: "Marketing Materials",
+      items: [
+        "Poster Design",
+        "Flyer Design",
+        "Brochure Design",
+        "Banner Design",
+      ],
+    },
+    {
+      title: "Business & Corporate Designs",
+      items: [
+        "Business Card Design",
+        "Letterhead Design",
+        "Company Profile Design",
+      ],
+    },
+    {
+      title: "Packaging Design",
+      items: ["Product Packaging", "Label Design", "Box Design"],
+    },
+  ];
+
+  const websiteDesignServices = [
+    "Portfolio Website Design",
+    "Business Website Design",
+    "Landing Page Design",
+    "UI/UX Design",
+    "Website Redesign",
+    "Mobile Responsive Design",
+  ];
+
+  const digitalMarketingServices = [
+    {
+      title: "Social Media Management",
+      items: [
+        "Instagram Management",
+        "Facebook Page Management",
+        "Content Posting & Scheduling",
+        "Audience Engagement",
+      ],
+    },
+    {
+      title: "Social Media Marketing",
+      items: [
+        "Instagram Growth Strategy",
+        "Content Planning",
+        "Hashtag Strategy",
+        "Performance Tracking",
+      ],
+    },
+    {
+      title: "Paid Advertising",
+      items: [
+        "Meta Ads (Facebook & Instagram Ads)",
+        "Google Ads Campaigns",
+        "Ad Creative Design",
+        "Campaign Optimization",
+      ],
+    },
+    {
+      title: "Content Marketing",
+      items: [
+        "Social Media Content Strategy",
+        "Carousel & Reel Content Ideas",
+        "Marketing Copywriting",
+      ],
+    },
+    {
+      title: "Email Marketing",
+      items: [
+        "Newsletter Design",
+        "Email Campaign Setup",
+        "Audience Segmentation",
+      ],
+    },
+  ];
+
+  return (
+    <section id="services" className="py-24" data-ocid="services.section">
+      <div className="container mx-auto px-6">
+        {/* Section Header */}
+        <div className="mb-16 reveal">
+          <div className="section-label">
+            <span
+              className="font-body text-sm font-semibold uppercase tracking-[0.2em]"
+              style={{ color: "rgba(255,255,255,0.5)" }}
+            >
+              What We Offer
+            </span>
+          </div>
+          <h2 className="font-display font-extrabold text-4xl md:text-5xl text-white">
+            Services
+          </h2>
+        </div>
+
+        {/* Service Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Graphic Design Card */}
+          <div
+            className="glass-card rounded-2xl p-6 flex flex-col gap-4 reveal"
+            data-ocid="services.graphic_design.panel"
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                style={{
+                  background: "rgba(248,71,19,0.15)",
+                  border: "1px solid rgba(248,71,19,0.3)",
+                }}
+              >
+                <Layers className="w-5 h-5" style={{ color: "#F84713" }} />
+              </div>
+              <h3 className="font-display font-bold text-xl text-white">
+                Graphic Design
+              </h3>
+            </div>
+            <Accordion type="multiple" className="w-full">
+              {graphicDesignServices.map((service, idx) => (
+                <AccordionItem
+                  key={service.title}
+                  value={`gd-${service.title}`}
+                  className="border-b"
+                  style={{ borderColor: "rgba(255,255,255,0.08)" }}
+                >
+                  <AccordionTrigger
+                    className="py-3 text-sm font-semibold text-white hover:no-underline"
+                    style={{ color: "rgba(255,255,255,0.9)" }}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span
+                        className="inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold"
+                        style={{
+                          background: "rgba(248,71,19,0.2)",
+                          color: "#F84713",
+                        }}
+                      >
+                        {idx + 1}
+                      </span>
+                      {service.title}
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <ul className="pl-7 pb-2 space-y-1">
+                      {service.items.map((item) => (
+                        <li
+                          key={item}
+                          className="text-xs flex items-center gap-2"
+                          style={{ color: "rgba(255,255,255,0.6)" }}
+                        >
+                          <span
+                            className="w-1 h-1 rounded-full inline-block flex-shrink-0"
+                            style={{ background: "#F84713" }}
+                          />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+
+          {/* Website Design Card */}
+          <div
+            className="glass-card rounded-2xl p-6 flex flex-col gap-4 reveal"
+            data-ocid="services.website_design.panel"
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                style={{
+                  background: "rgba(248,71,19,0.15)",
+                  border: "1px solid rgba(248,71,19,0.3)",
+                }}
+              >
+                <svg
+                  className="w-5 h-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#F84713"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <path d="M3 9h18M9 21V9" />
+                </svg>
+              </div>
+              <h3 className="font-display font-bold text-xl text-white">
+                Website Design
+              </h3>
+            </div>
+            <ul className="space-y-2 mt-2">
+              {websiteDesignServices.map((service, idx) => (
+                <li
+                  key={service}
+                  className="flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                  }}
+                >
+                  <span
+                    className="inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold flex-shrink-0"
+                    style={{
+                      background: "rgba(248,71,19,0.2)",
+                      color: "#F84713",
+                    }}
+                  >
+                    {idx + 1}
+                  </span>
+                  <span
+                    className="text-sm"
+                    style={{ color: "rgba(255,255,255,0.85)" }}
+                  >
+                    {service}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Digital Marketing Card */}
+          <div
+            className="glass-card rounded-2xl p-6 flex flex-col gap-4 reveal"
+            data-ocid="services.digital_marketing.panel"
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                style={{
+                  background: "rgba(248,71,19,0.15)",
+                  border: "1px solid rgba(248,71,19,0.3)",
+                }}
+              >
+                <svg
+                  className="w-5 h-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#F84713"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                </svg>
+              </div>
+              <h3 className="font-display font-bold text-xl text-white">
+                Digital Marketing
+              </h3>
+            </div>
+            <Accordion type="multiple" className="w-full">
+              {digitalMarketingServices.map((service, idx) => (
+                <AccordionItem
+                  key={service.title}
+                  value={`dm-${service.title}`}
+                  className="border-b"
+                  style={{ borderColor: "rgba(255,255,255,0.08)" }}
+                >
+                  <AccordionTrigger
+                    className="py-3 text-sm font-semibold text-white hover:no-underline"
+                    style={{ color: "rgba(255,255,255,0.9)" }}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span
+                        className="inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold"
+                        style={{
+                          background: "rgba(248,71,19,0.2)",
+                          color: "#F84713",
+                        }}
+                      >
+                        {idx + 1}
+                      </span>
+                      {service.title}
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <ul className="pl-7 pb-2 space-y-1">
+                      {service.items.map((item) => (
+                        <li
+                          key={item}
+                          className="text-xs flex items-center gap-2"
+                          style={{ color: "rgba(255,255,255,0.6)" }}
+                        >
+                          <span
+                            className="w-1 h-1 rounded-full inline-block flex-shrink-0"
+                            style={{ background: "#F84713" }}
+                          />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function CaseStudySection() {
   const stepsRef = useRef<HTMLDivElement>(null);
@@ -1180,169 +1572,330 @@ function CaseStudySection() {
    Instagram Reels Section — autoplay + continuous autoscroll
    ============================================ */
 
+const REEL_THUMBS = [
+  "/assets/generated/reel-thumb-branding.dim_220x390.jpg",
+  "/assets/generated/reel-thumb-uiux.dim_220x390.jpg",
+  "/assets/generated/reel-thumb-social.dim_220x390.jpg",
+  "/assets/generated/reel-thumb-web.dim_220x390.jpg",
+  "/assets/generated/reel-thumb-logo.dim_220x390.jpg",
+  "/assets/generated/reel-thumb-marketing.dim_220x390.jpg",
+];
+
 const REEL_DATA = [
   {
     id: 1,
     url: "https://www.instagram.com/reel/DFnDBxSy57q/",
-    label: "Design Reel 1",
+    label: "Branding Design",
+    thumb: REEL_THUMBS[0],
+    duration: "0:15",
   },
   {
     id: 2,
     url: "https://www.instagram.com/reel/DFfnjg4yOkj/",
-    label: "Design Reel 2",
+    label: "UI/UX Design",
+    thumb: REEL_THUMBS[1],
+    duration: "0:22",
   },
   {
     id: 3,
     url: "https://www.instagram.com/reel/DFcxo9uS30T/",
-    label: "Design Reel 3",
+    label: "Social Media",
+    thumb: REEL_THUMBS[2],
+    duration: "0:18",
   },
   {
     id: 4,
     url: "https://www.instagram.com/reel/DFSHnQYyCim/",
-    label: "Design Reel 4",
+    label: "Brand Identity",
+    thumb: REEL_THUMBS[3],
+    duration: "0:30",
   },
   {
     id: 5,
     url: "https://www.instagram.com/reel/DFPzcnFSEpc/",
-    label: "Design Reel 5",
+    label: "Motion Design",
+    thumb: REEL_THUMBS[4],
+    duration: "0:12",
   },
   {
     id: 6,
     url: "https://www.instagram.com/reel/DFNOiszSWQg/",
-    label: "Design Reel 6",
+    label: "Web Design",
+    thumb: REEL_THUMBS[5],
+    duration: "0:25",
   },
   {
     id: 7,
     url: "https://www.instagram.com/reel/DFDCLhCSZis/",
-    label: "Design Reel 7",
+    label: "Digital Marketing",
+    thumb: REEL_THUMBS[0],
+    duration: "0:20",
   },
   {
     id: 8,
     url: "https://www.instagram.com/reel/DEzw4ZqSmRs/",
-    label: "Design Reel 8",
+    label: "Logo Design",
+    thumb: REEL_THUMBS[1],
+    duration: "0:17",
   },
   {
     id: 9,
     url: "https://www.instagram.com/reel/DExAG5yS-S8/",
-    label: "Design Reel 9",
+    label: "UI Design",
+    thumb: REEL_THUMBS[2],
+    duration: "0:28",
   },
   {
     id: 10,
     url: "https://www.instagram.com/reel/DE2J915yz9T/",
-    label: "Design Reel 10",
+    label: "Creative Reel",
+    thumb: REEL_THUMBS[3],
+    duration: "0:14",
   },
   {
     id: 11,
     url: "https://www.instagram.com/reel/DEmtsa7SXJ9/",
-    label: "Design Reel 11",
+    label: "Graphic Design",
+    thumb: REEL_THUMBS[4],
+    duration: "0:21",
   },
   {
     id: 12,
     url: "https://www.instagram.com/reel/DEpSZqdS3KM/",
-    label: "Design Reel 12",
+    label: "Brand Design",
+    thumb: REEL_THUMBS[5],
+    duration: "0:19",
   },
   {
     id: 13,
     url: "https://www.instagram.com/reel/DEhjpuDS2YB/",
-    label: "Design Reel 13",
+    label: "Visual Identity",
+    thumb: REEL_THUMBS[0],
+    duration: "0:16",
   },
   {
     id: 14,
     url: "https://www.instagram.com/reel/DEcbXDsyqgk/",
-    label: "Design Reel 14",
+    label: "Design Process",
+    thumb: REEL_THUMBS[1],
+    duration: "0:26",
   },
   {
     id: 15,
     url: "https://www.instagram.com/reel/DEXRjNLIN2F/",
-    label: "Design Reel 15",
+    label: "Typography",
+    thumb: REEL_THUMBS[2],
+    duration: "0:13",
   },
   {
     id: 16,
     url: "https://www.instagram.com/reel/DEe-reJSP_I/",
-    label: "Design Reel 16",
+    label: "Color Palette",
+    thumb: REEL_THUMBS[3],
+    duration: "0:23",
   },
   {
     id: 17,
     url: "https://www.instagram.com/reel/DESHXMuyzY_/",
-    label: "Design Reel 17",
+    label: "Creative Work",
+    thumb: REEL_THUMBS[4],
+    duration: "0:29",
   },
 ];
 
 function ReelCard({ reel }: { reel: (typeof REEL_DATA)[0] }) {
+  const [isPlaying, setIsPlaying] = React.useState(false);
+
+  // Extract shortcode from Instagram URL for embed
+  const shortcode = reel.url.replace(/\/$/, "").split("/").pop() ?? "";
+  const embedUrl = `https://www.instagram.com/reel/${shortcode}/embed/`;
+
   return (
-    <a
-      href={reel.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="reel-item rounded-2xl overflow-hidden relative flex-shrink-0 cursor-pointer block"
+    <div
+      className="reel-item rounded-2xl overflow-hidden relative flex-shrink-0 group"
       style={{
-        width: "200px",
-        minWidth: "200px",
-        height: "355px",
-        background:
-          "linear-gradient(160deg, oklch(0.18 0.04 260) 0%, oklch(0.10 0.02 260) 100%)",
-        border: "1px solid rgba(255,255,255,0.1)",
-        textDecoration: "none",
+        width: "220px",
+        minWidth: "220px",
+        height: "390px",
+        border: "1px solid rgba(255,255,255,0.12)",
+        boxShadow: isPlaying
+          ? "0 16px 48px rgba(248,71,19,0.35)"
+          : "0 8px 32px rgba(0,0,0,0.4)",
+        transition:
+          "transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease",
+        cursor: isPlaying ? "default" : "pointer",
+      }}
+      onMouseEnter={(e) => {
+        if (!isPlaying) {
+          (e.currentTarget as HTMLElement).style.transform = "scale(1.04)";
+          (e.currentTarget as HTMLElement).style.boxShadow =
+            "0 16px 48px rgba(248,71,19,0.25)";
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isPlaying) {
+          (e.currentTarget as HTMLElement).style.transform = "scale(1)";
+          (e.currentTarget as HTMLElement).style.boxShadow =
+            "0 8px 32px rgba(0,0,0,0.4)";
+        }
       }}
     >
-      {/* Dark gradient background */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(160deg, oklch(0.18 0.04 260) 0%, oklch(0.10 0.02 260) 100%)",
-        }}
-      />
+      {isPlaying ? (
+        /* ── Inline Instagram embed player ── */
+        <>
+          <iframe
+            src={embedUrl}
+            className="absolute inset-0 w-full h-full"
+            style={{ border: "none" }}
+            allowFullScreen
+            scrolling="no"
+            title={reel.label}
+          />
+          {/* Close / back button */}
+          <button
+            type="button"
+            onClick={() => setIsPlaying(false)}
+            className="absolute top-2 right-2 z-20 w-8 h-8 rounded-full flex items-center justify-center"
+            style={{
+              background: "rgba(0,0,0,0.72)",
+              backdropFilter: "blur(6px)",
+              border: "1px solid rgba(255,255,255,0.2)",
+              color: "white",
+              cursor: "pointer",
+            }}
+            aria-label="Close player"
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              role="img"
+              aria-label="Close"
+            >
+              <title>Close</title>
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </>
+      ) : (
+        /* ── Thumbnail preview ── */
+        <>
+          {/* Thumbnail image */}
+          <img
+            src={reel.thumb}
+            alt={reel.label}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
 
-      {/* Animated shimmer to simulate running video */}
-      <div className="absolute inset-0 reel-shimmer" />
+          {/* Dark overlay */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(0,0,0,0.15) 0%, transparent 35%, rgba(0,0,0,0.78) 100%)",
+            }}
+          />
 
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+          {/* Top badge */}
+          <div
+            className="absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2 py-1 rounded-full"
+            style={{
+              background: "rgba(0,0,0,0.55)",
+              backdropFilter: "blur(6px)",
+              border: "1px solid rgba(255,255,255,0.15)",
+            }}
+          >
+            <Instagram className="w-3 h-3" style={{ color: "#F84713" }} />
+            <span
+              className="font-body text-xs font-semibold"
+              style={{ color: "rgba(255,255,255,0.9)" }}
+            >
+              Reel
+            </span>
+          </div>
 
-      {/* Auto-running visual indicator — pulsing dot */}
-      <div className="absolute top-4 left-4 flex items-center gap-1.5">
-        <span className="w-2 h-2 rounded-full bg-red-500 reel-live-dot" />
-        <span className="font-body text-xs text-white/70 font-semibold">
-          REEL
-        </span>
-      </div>
+          {/* Duration badge */}
+          <div
+            className="absolute top-3 right-3 z-10 px-1.5 py-0.5 rounded"
+            style={{
+              background: "rgba(0,0,0,0.65)",
+              backdropFilter: "blur(4px)",
+            }}
+          >
+            <span
+              className="font-body text-xs font-semibold"
+              style={{ color: "rgba(255,255,255,0.85)" }}
+            >
+              {reel.duration}
+            </span>
+          </div>
 
-      {/* Instagram icon top right */}
-      <div className="absolute top-4 right-4">
-        <Instagram
-          className="h-5 w-5"
-          style={{ color: "rgba(255,255,255,0.75)" }}
-        />
-      </div>
+          {/* Play button — visible always, glows on hover */}
+          <button
+            type="button"
+            onClick={() => setIsPlaying(true)}
+            className="absolute inset-0 w-full h-full flex items-center justify-center z-10 focus:outline-none"
+            style={{
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+            }}
+            aria-label={`Play ${reel.label}`}
+          >
+            <div
+              className="w-14 h-14 rounded-full flex items-center justify-center opacity-80 group-hover:opacity-100 transition-all duration-200 group-hover:scale-110"
+              style={{
+                background: "rgba(248,71,19,0.92)",
+                boxShadow: "0 0 28px rgba(248,71,19,0.6)",
+              }}
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="white"
+                role="img"
+                aria-label="Play"
+              >
+                <title>Play</title>
+                <polygon points="5,3 19,12 5,21" />
+              </svg>
+            </div>
+          </button>
 
-      {/* Play icon center */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div
-          className="w-12 h-12 rounded-full flex items-center justify-center"
-          style={{
-            background: "rgba(255,255,255,0.12)",
-            backdropFilter: "blur(8px)",
-            border: "1px solid rgba(255,255,255,0.2)",
-          }}
-        >
-          <Play className="h-5 w-5 text-white ml-0.5" fill="white" />
-        </div>
-      </div>
-
-      {/* Bottom info */}
-      <div className="absolute bottom-5 left-4 right-4">
-        <p className="font-body text-sm text-white font-semibold leading-tight mb-0.5">
-          {reel.label}
-        </p>
-        <p
-          className="font-body text-xs"
-          style={{ color: "rgba(255,255,255,0.55)" }}
-        >
-          @designwid_surya
-        </p>
-      </div>
-    </a>
+          {/* Bottom label + progress bar */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
+            <div
+              className="w-full h-0.5 rounded-full mb-3 overflow-hidden"
+              style={{ background: "rgba(255,255,255,0.2)" }}
+            >
+              <div
+                className="h-full rounded-full"
+                style={{ width: "40%", background: "rgba(248,71,19,0.85)" }}
+              />
+            </div>
+            <span
+              className="font-body text-sm font-semibold"
+              style={{ color: "rgba(255,255,255,0.95)" }}
+            >
+              {reel.label}
+            </span>
+            <div className="flex items-center gap-1 mt-1">
+              <span
+                className="font-body text-xs"
+                style={{ color: "rgba(255,255,255,0.5)" }}
+              >
+                @designwid_surya
+              </span>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 
@@ -2183,11 +2736,14 @@ function ContactSection() {
       if (!actor) throw new Error("Actor not ready");
       await actor.submitContactForm(name, email, projectType, message);
       setIsSuccess(true);
+      // Open WhatsApp with pre-filled form details
+      const waMessage = `Hello Surya! I'd like to start a project.%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Email:* ${encodeURIComponent(email)}%0A*Project Type:* ${encodeURIComponent(projectType)}%0A*Message:* ${encodeURIComponent(message)}`;
+      window.open(`https://wa.me/918438974582?text=${waMessage}`, "_blank");
       setName("");
       setEmail("");
       setProjectType("");
       setMessage("");
-      toast.success("Message sent! I'll get back to you soon.");
+      toast.success("Opening WhatsApp to send your project details!");
     } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {
@@ -2411,20 +2967,17 @@ function ContactSection() {
                       <SelectValue placeholder="Select project type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Brand Identity">
-                        Brand Identity
-                      </SelectItem>
-                      <SelectItem value="UI/UX Design">UI/UX Design</SelectItem>
-                      <SelectItem value="Social Media">
-                        Social Media Design
+                      <SelectItem value="Graphic Design">
+                        Graphic Design
                       </SelectItem>
                       <SelectItem value="Website Design">
                         Website Design
                       </SelectItem>
+                      <SelectItem value="UI/UX Design">UI/UX Design</SelectItem>
                       <SelectItem value="Digital Marketing">
                         Digital Marketing
                       </SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
+                      <SelectItem value="Others">Others</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -2450,7 +3003,7 @@ function ContactSection() {
                   />
                 </div>
 
-                {/* Submit — animated Send Message button */}
+                {/* Submit — animated Start Your Project button */}
                 <Button
                   data-ocid="contact.submit_button"
                   type="submit"
@@ -2462,11 +3015,11 @@ function ContactSection() {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Sending...
+                      Starting...
                     </>
                   ) : (
                     <>
-                      Send Message
+                      Start Your Project
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </>
                   )}
@@ -2634,7 +3187,7 @@ export default function App() {
 
   return (
     <div
-      className="min-h-screen"
+      className="min-h-screen overflow-x-hidden"
       style={{ background: "oklch(var(--background))" }}
     >
       <Toaster richColors position="top-right" />
@@ -2681,6 +3234,7 @@ export default function App() {
           <HeroSection />
           <FeaturedProjects />
           <CaseStudySection />
+          <ServicesSection />
           <ReelsSection />
           <SkillsSection />
           <AboutSection />

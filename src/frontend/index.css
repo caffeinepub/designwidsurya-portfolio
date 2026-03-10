@@ -567,8 +567,9 @@
   inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  border-radius: 2.5rem;
+  border-radius: 3.5rem;
   overflow: hidden;
+  clip-path: inset(0 round 3.5rem);
 }
 
 .flip-card-back {
