@@ -504,7 +504,7 @@ function HeroFlipCard() {
               }}
             >
               <img
-                src="/assets/uploads/Artboard-1-2.jpg"
+                src="/assets/uploads/Front-2.jpg"
                 alt="Surya — Designer Poster"
                 className="w-full h-full object-contain"
                 style={{ background: "transparent", borderRadius: "3.5rem" }}
@@ -521,7 +521,7 @@ function HeroFlipCard() {
               }}
             >
               <img
-                src="/assets/uploads/Artboard-2-1.jpg"
+                src="/assets/uploads/back-1.jpg"
                 alt="Surya — Business Card"
                 className="w-full h-full object-contain"
                 style={{ background: "transparent", borderRadius: "3.5rem" }}
