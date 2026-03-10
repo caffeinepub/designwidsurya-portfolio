@@ -530,7 +530,6 @@ function HeroFlipCard() {
    ============================================ */
 
 function HeroSection() {
-  const [spotlightPos, setSpotlightPos] = useState({ x: -9999, y: -9999 });
   const sectionRef = useRef<HTMLElement>(null);
 
   const scrollTo = (id: string) => {
@@ -538,26 +537,11 @@ function HeroSection() {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const rect = sectionRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    setSpotlightPos({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
-  };
-
-  const handleMouseLeave = () => {
-    setSpotlightPos({ x: -9999, y: -9999 });
-  };
-
   return (
     <section
       id="hero"
       ref={sectionRef}
       className="relative min-h-screen flex items-center overflow-hidden pt-20"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
     >
       {/* Static ambient glow on headline area */}
       <div
@@ -567,15 +551,6 @@ function HeroSection() {
             "radial-gradient(500px circle at 30% 45%, rgba(248,71,19,0.10), transparent 65%)",
         }}
       />
-      {/* Spotlight effect — follows cursor */}
-      <div
-        className="absolute inset-0 pointer-events-none z-[2]"
-        style={{
-          background: `radial-gradient(700px circle at ${spotlightPos.x}px ${spotlightPos.y}px, rgba(248,71,19,0.20), rgba(248,71,19,0.07) 40%, transparent 70%)`,
-          mixBlendMode: "screen",
-        }}
-      />
-
       {/* Subtle grid overlay */}
       <div
         className="absolute inset-0 opacity-[0.025] pointer-events-none"
@@ -602,11 +577,12 @@ function HeroSection() {
             </div>
 
             {/* Main Headline */}
-            <h1 className="font-display font-extrabold text-5xl md:text-6xl lg:text-7xl leading-[1.0] tracking-tight mb-6 reveal reveal-delay-1">
-              <span className="block text-white">
-                Graphic &amp; Web Designer,
-                <br className="hidden md:block" /> and Digital Marketer
-              </span>
+            <h1
+              className="font-display font-extrabold text-5xl md:text-6xl lg:text-7xl leading-[1.0] tracking-tight mb-6 reveal reveal-delay-1"
+              style={{ color: "white" }}
+            >
+              Graphic &amp; Web Designer,
+              <br className="hidden md:block" /> and Digital Marketer
             </h1>
 
             {/* Subheadline */}
