@@ -451,7 +451,7 @@ function HeroFlipCard() {
     <div className="relative flex items-center justify-center lg:justify-end">
       {/* Glow halo behind card */}
       <div
-        className="absolute rounded-full pointer-events-none"
+        className="hidden md:block absolute rounded-full pointer-events-none"
         style={{
           width: "380px",
           height: "520px",
@@ -464,8 +464,8 @@ function HeroFlipCard() {
 
       {/* Card wrapper — float bob */}
       <div
-        className={`float-bob relative z-10${isHovered ? " float-bob-paused" : ""}`}
-        style={{ width: "360px", height: "520px" }}
+        className={`float-bob relative z-10 w-[280px] h-[400px] md:w-[360px] md:h-[520px]${isHovered ? " float-bob-paused" : ""}`}
+        style={{}}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={handleCardMouseLeave}
         onMouseMove={handleCardMouseMove}
@@ -541,7 +541,7 @@ function HeroSection() {
     <section
       id="hero"
       ref={sectionRef}
-      className="relative min-h-screen flex items-center overflow-hidden pt-20"
+      className="relative min-h-screen flex items-center overflow-hidden overflow-x-hidden pt-20"
     >
       {/* Static ambient glow on headline area */}
       <div
@@ -561,7 +561,7 @@ function HeroSection() {
         }}
       />
 
-      <div className="container mx-auto px-6 py-24 relative z-10">
+      <div className="container mx-auto px-4 md:px-6 py-16 md:py-24 relative z-10">
         {/* Two-column layout */}
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-0">
           {/* Left — Content */}
@@ -638,7 +638,7 @@ function HeroSection() {
           </div>
 
           {/* Right — 3D Flip Card */}
-          <div className="w-full lg:w-[45%] flex-shrink-0 flex justify-center lg:justify-end reveal reveal-delay-2">
+          <div className="w-full lg:w-[45%] flex-shrink-0 flex justify-center lg:justify-end overflow-hidden reveal reveal-delay-2">
             <HeroFlipCard />
           </div>
         </div>
@@ -665,7 +665,9 @@ function ProjectCard({
       key={project.id}
       data-ocid={`projects.item.${project.id}`}
       className={`project-card glass-card rounded-2xl overflow-hidden reveal reveal-delay-${Math.min(index + 1, 5)} flex-shrink-0 ${
-        prominent ? "w-[340px]" : "w-64"
+        prominent
+          ? "w-[260px] sm:w-[300px] md:w-[340px]"
+          : "w-52 sm:w-60 md:w-64"
       }`}
     >
       {/* Project Image */}
@@ -777,7 +779,7 @@ function FeaturedProjects() {
   const allProjects = [...PROJECTS, ...PROJECTS];
 
   return (
-    <section id="work" className="py-24">
+    <section id="work" className="py-24 overflow-hidden">
       <div className="container mx-auto px-6">
         {/* Section Header */}
         <div className="mb-12 reveal">
@@ -938,8 +940,93 @@ function CaseStudySection() {
           </div>
 
           {/* Case Study Content */}
-          <div className="p-8 md:p-12">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div className="p-4 md:p-8 lg:p-12">
+            {/* Mobile horizontal scroll */}
+            <div
+              className="flex md:hidden overflow-x-auto gap-4 pb-4 snap-x snap-mandatory -mx-4 px-4 mb-12"
+              style={{ scrollbarWidth: "none" }}
+            >
+              {/* Problem */}
+              <div
+                className="glass-card rounded-xl p-5 flex-shrink-0 w-[75vw] snap-start"
+                style={{ border: "1px solid rgba(255,255,255,0.06)" }}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span
+                    className="font-display font-bold text-2xl"
+                    style={{ color: "oklch(var(--coral))" }}
+                  >
+                    01
+                  </span>
+                  <h4 className="font-display font-bold text-lg text-white">
+                    Problem
+                  </h4>
+                </div>
+                <p
+                  className="font-body text-sm leading-relaxed"
+                  style={{ color: "rgba(255,255,255,0.6)" }}
+                >
+                  People struggle with waste disposal services and scheduling
+                  pickup. Existing systems are fragmented, hard to use, and lack
+                  real-time tracking.
+                </p>
+              </div>
+
+              {/* Solution */}
+              <div
+                className="glass-card rounded-xl p-5 flex-shrink-0 w-[75vw] snap-start"
+                style={{ border: "1px solid rgba(255,255,255,0.06)" }}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span
+                    className="font-display font-bold text-2xl"
+                    style={{ color: "oklch(var(--coral))" }}
+                  >
+                    02
+                  </span>
+                  <h4 className="font-display font-bold text-lg text-white">
+                    Solution
+                  </h4>
+                </div>
+                <p
+                  className="font-body text-sm leading-relaxed"
+                  style={{ color: "rgba(255,255,255,0.6)" }}
+                >
+                  Designed a mobile app that allows users to easily schedule
+                  waste collection and track pickup services with an intuitive
+                  and accessible interface.
+                </p>
+              </div>
+
+              {/* Result */}
+              <div
+                className="glass-card rounded-xl p-5 flex-shrink-0 w-[75vw] snap-start"
+                style={{ border: "1px solid rgba(255,255,255,0.06)" }}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span
+                    className="font-display font-bold text-2xl"
+                    style={{ color: "oklch(var(--coral))" }}
+                  >
+                    03
+                  </span>
+                  <h4 className="font-display font-bold text-lg text-white">
+                    Result
+                  </h4>
+                </div>
+                <p
+                  className="font-body text-sm leading-relaxed"
+                  style={{ color: "rgba(255,255,255,0.6)" }}
+                >
+                  Created a simple and user-friendly app experience that
+                  improves waste management efficiency and promotes
+                  sustainability.
+                </p>
+              </div>
+            </div>
+
+            {/* Desktop grid */}
+            <div className="hidden md:grid grid-cols-3 gap-6 mb-12">
               {/* Problem */}
               <div
                 className="glass-card rounded-xl p-5"

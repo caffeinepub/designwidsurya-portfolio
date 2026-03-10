@@ -567,7 +567,7 @@
   inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  border-radius: 1.25rem;
+  border-radius: 2.5rem;
   overflow: hidden;
 }
 
